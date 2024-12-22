@@ -10,7 +10,7 @@ clean_ndtms_ons_data <-
     # Remove country-level data
     data <- data[geography == "LA", ]
     # Re-format periods
-    data[, year := stringr::str_extract(period_range, "\\d{4}")]
+    data[, year := stringr::str_extract(period_range, "\\d{4}")][, year:= as.integer(year)]
    # Select columns
     data <-
         data[, .(year, area_code, area_name, death_cause, age, agegrp, sex, drug_group, treatment_status, count)]

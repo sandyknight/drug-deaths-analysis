@@ -1,5 +1,3 @@
-                                        #
-# Testing from WSL2
 
 #' Summarise NDTMS-ONS linked dataset
 #'
@@ -9,17 +7,18 @@
 summarise_ndtms_ons_data <-
     function(data, years, group_by) {
         require(data.table)
-        require(testthat)
+        # Check that the input data is has been cleaned
+        if(nrow(data[area_name == "England"]) != 0 | "agegrp" %notin% colnames(data)) {
+          message("Data contains national-level rows or incorrect column names: has the data been cleaned using `clean_ndtms_ons_data()`?")
+        }
+
+        if ("year" %notin% colnames(data)) {
+          message(glue::glue("`years` value(s) not found in data, make sure they are numeric. Available years: {unique(data$year)}"))
+}
+
        data <- data[year %in% years, ]
     }
 
-# Test that the input data is has been cleaned
 
-nrow(data[area_name == "England"]) == 0
-"year" %in% colnames(data)
-"agegrp" %notin% colnames(data)
 
-testthat::test_that(
-              testthat::expect_true(nrow(data[area_name == "England"]) == 0,
-                                    "agegrp" %notin% colnames(data))
-          )
+summarise_ndtms_ons_data(df, years = "2020")
