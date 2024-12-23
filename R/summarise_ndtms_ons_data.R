@@ -8,7 +8,7 @@ summarise_ndtms_ons_data <-
     function(data, years, group_by) {
         require(data.table)
         # Check that the input data is has been cleaned
-        if(nrow(data[area_name == "England"]) != 0 | "agegrp" %notin% colnames(data)) {
+        if(nrow(data[area_name == "England"]) > 0 | "agegrp" %in% colnames(data)) {
           message("Data contains national-level rows or incorrect column names: has the data been cleaned using `clean_ndtms_ons_data()`?")
         }
 
@@ -17,8 +17,14 @@ summarise_ndtms_ons_data <-
 }
 
        data <- data[year %in% years, ]
+
+        return(data)
     }
 
 
+source("R/get_ndtms_ons_dataset.R")
+source("R/clean_ndtms_ons_dataset.R")
+df <- get_ndtms_ons_dataset()
+df <- clean_ndtms_ons_data(df)
+df <- summarise_ndtms_ons_data(df, years = 2021)
 
-summarise_ndtms_ons_data(df, years = "2020")
