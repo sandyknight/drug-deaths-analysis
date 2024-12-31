@@ -2,7 +2,7 @@
 # require(lubridate)
 
 df <-
-  data.table::fread("data/raw/drug_deaths_data.csv")
+  data.table::fread("inst/extdata/raw/drug_deaths_data.csv")
 
 df <- df[drug_group == "Total Deaths", ]
 

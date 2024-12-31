@@ -1,9 +1,8 @@
-get_ons_alcohol_specific_death_data <-
-  ##FIXME this function is not working!
+get_ons_alcohol_specific_deaths <-
   function() {
 
     require(data.table)
-    
+
     url <-
       "https://www.ons.gov.uk/file?uri=/peoplepopulationandcommunity/healthandsocialcare/causesofdeath/datasets/alcoholspecificdeathsbysexagegroupandindividualcauseofdeath/current/deathsbyindividualcause.xlsx"
 
@@ -40,7 +39,13 @@ get_ons_alcohol_specific_death_data <-
     )
 
     ## Get count of age group and sex and exclude "persons" value in sex column
-    df <- df[, .(count = .N), by = c("sex", "age_group")][sex != "Persons"]
+    df <-
+      df[, .(count = sum(count)), by = c("sex", "age_group")][sex != "Persons"]
+
+
+    # Standardise the sex column
+    df[, sex := gsub("s$", "", sex)] # Remove trailing 's'
+    df[, sex := tolower(sex), ] # Convert to lower case
 
     return(df)
   }

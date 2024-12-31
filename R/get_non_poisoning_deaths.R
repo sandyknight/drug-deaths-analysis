@@ -3,13 +3,13 @@
 get_non_poisoning_deaths <-
   function() {
     require(data.table)
-    if (file.exists("data/processed/non_poisoning_deaths_data.csv")) {
-      df <- data.table::fread("data/processed/non_poisoning_deaths_data.csv")
+    if (file.exists("inst/extdata/processed/non_poisoning_deaths_data.csv")) {
+      df <- data.table::fread("inst/extdata/processed/non_poisoning_deaths_data.csv")
     } else {
       require(openxlsx)
 
       df <-
-        openxlsx::read.xlsx("data/raw/non_poisoning_deaths_data.xlsx",
+        openxlsx::read.xlsx("inst/extdata/raw/non_poisoning_deaths_data.xlsx",
                             sheet = "NDTMS_ONS",
                             detectDates = TRUE) |>
         janitor::clean_names()
@@ -20,9 +20,9 @@ get_non_poisoning_deaths <-
 
       df <- df[death_cause != "Drug poisoning", ]
 
-      data.table::fwrite(df, "data/processed/non_poisoning_deaths_data.csv")
+      data.table::fwrite(df, "inst/extdata/processed/non_poisoning_deaths_data.csv")
 
-      df <- data.table::fread("data/processed/non_poisoning_deaths_data.csv")
+      df <- data.table::fread("inst/extdata/processed/non_poisoning_deaths_data.csv")
     }
 
     # Remove country-level df
@@ -37,21 +37,22 @@ get_non_poisoning_deaths <-
 
     # Select columns
     df <-
-      df[, .(
-        year,
-        area_code,
-        area_name,
-        death_cause,
-        age,
-        agegrp,
-        sex,
-        drug_group,
-        treatment_status,
-        count
+      df[, .(year,
+             area_code,
+             area_name,
+             death_cause,
+             age,
+             agegrp,
+             sex,
+             drug_group,
+             treatment_status,
+             count
       )]
 
     # Rename age group column
     data.table::setnames(df, "agegrp", "age_group")
 
+
     return(df)
+
   }
